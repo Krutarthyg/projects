@@ -1,0 +1,242 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node 
+{
+	char name[20];
+	char usn[10];
+	float marks;
+	struct node *prev;
+	struct node *next;
+};
+
+struct node * start = NULL;
+int count = 0;
+
+struct node * create()
+{
+	struct node * newnode = (struct node *) malloc(sizeof(struct node));
+	if(newnode==NULL)
+	{
+		printf("No memory space available to create linked list node.");
+		exit(1);
+	}
+	count++;
+	printf("\nEnter the student %d details:\n\tEnter name, usn and marks: ", count);
+	scanf("%s %s %f", newnode->name, newnode->usn, &newnode->marks);
+	newnode->prev = NULL;
+	newnode->next = NULL;
+	return newnode;
+}
+
+struct node * insertfront()
+{
+	struct node * temp;
+	temp = create();
+	if(start==NULL)
+	{
+		start = temp;
+		//temp->prev = temp->next = NULL;
+	}
+	else 
+	{
+		temp->next = start;
+		temp->prev = NULL;
+		start = temp;
+	}
+	return start;
+}
+
+struct node * deletefront()
+{
+	if(start==NULL)
+	{
+		printf("The Linked List is empty.");
+		return NULL;
+	}
+	if(start->next==NULL)
+	{
+		printf("The student details of student with USN %s is deleted.", start->usn); 
+		free(start);
+		return NULL;
+	}
+	struct node * temp;
+	temp = start;
+	start = start->next;
+	start->prev = NULL;
+	count--;
+	printf("The student details of student with USN %s is deleted.", temp->usn);
+	free(temp);
+	return start;
+}
+
+struct node * insertend()
+{
+	struct node * newnode, *temp;
+	newnode = create();
+	if(start==NULL)
+		start = newnode;
+	else
+	{
+		temp = start;
+		while(temp->next!=NULL)
+			temp = temp->next;
+		temp->next = newnode;
+		newnode->prev = temp;
+		newnode->next = NULL;
+	}
+	return start;
+}
+
+struct node * deleteend()
+{
+	struct node * cur, *pre;
+	if(start==NULL)
+	{
+		printf("The Linked List is empty.");
+		return NULL;
+	}
+	if(start->next==NULL)
+	{
+		printf("The student details of student with USN %s is deleted.", start->usn); 
+		free(start);
+		return NULL;
+	}
+	
+	cur = start;
+	while(cur->next!=NULL)
+	{
+		pre = cur;
+		cur = cur->next;
+	}
+	printf("The student details of student with USN %s is deleted.", cur->usn);
+	free(cur);
+	pre->next=NULL;
+	count--;
+	
+	return start;
+}
+
+void display()
+{
+	if(start==NULL)
+	{
+		printf("No contents to display in the Linked List");
+		return;
+	}
+	struct node * temp;
+	temp = start;
+	int num=1;
+	printf("Linked List of %d Student's Details: ", count);
+	while(temp!=NULL)
+	{
+		printf("\nStudent %d Details: || Name: %s || USN: %s || Marks: %f", num, temp->name, temp->usn, temp->marks);
+		temp = temp->next;
+		num++;
+	}
+	
+}
+
+void stackdemo()
+{
+	int stackchoice;
+	printf("Enter: \n1. Push node to stack \n2. Pop node from the stack \n3.Display the stack \n4.Return to main");
+	while(1)
+	{
+		printf("\nEnter your stack choice: ");
+		scanf("%d", &stackchoice);
+		switch(stackchoice)
+		{
+			case 1:
+				start = insertfront();
+				display();
+				break;
+			case 2:
+				start = deletefront();
+				break;
+			case 3: 
+				display();
+				break;
+			case 4:
+				return;
+			default: 
+				printf("Wrong choice entered.");
+		}
+	}
+}
+
+void queuedemo()
+{
+	int queuechoice;
+	printf("Enter: \n1. Enqueue node to queue \n2. Dequeue node from the queue \n3.Display the queue \n4.Return to main");
+	while(1)
+	{
+		printf("\nEnter your queue choice: ");
+		scanf("%d", &queuechoice);
+		switch(queuechoice)
+		{
+			case 1:
+				start = insertend();
+				display();
+				break;
+			case 2:
+				start = deletefront();
+				break;
+			case 3: 
+				display();
+				break;
+			case 4:
+				return;
+			default: 
+				printf("Wrong choice entered.");
+		}
+	}
+}
+ 
+int main()
+{
+	int choice, n;
+	printf("Menu driven approach: \n1. Create a DLL of student nodes \n2. Insert a node in the beginning of the DLL \n3. Delete a node in the beginning of the DLL \n4. Insert a node in the end of the DLL \n5. Delete a node in the end of the DLL \n6. Display the Linked List \n7. Stack Demo \n8. Queue Demo \n9. Exit the program");
+	
+	while(1)
+	{
+		printf("\n\nEnter your choice: ");
+		scanf("%d", &choice);
+		switch(choice)
+		{
+			case 1:
+				printf("Enter the number of nodes to be created in the Linked List: ");
+				scanf("%d", &n);
+				for(int i=1; i<=n; i++)
+					start = insertend();
+				display();
+				break;
+			case 2:
+				start = insertfront();
+				break;
+			case 3: 
+				start = deletefront();
+				break;
+			case 4:
+				start = insertend();
+				break;
+			case 5: 
+				start = deleteend();
+				break; 
+			case 6:
+				display();
+				break;
+			case 7:
+				stackdemo();
+				break;
+			case 8:
+				queuedemo();
+				break;
+			case 9:
+				exit(0);
+			default:
+				printf("Wrong choice entered.");
+		}
+	}
+	return 0;
+}
